@@ -13,6 +13,9 @@ public class Task {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public Task() {
+    }
+
     public Task(long id, String description) {
         this.id = id;
         this.description = description;
