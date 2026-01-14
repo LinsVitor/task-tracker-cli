@@ -1,7 +1,10 @@
 package com.tasktracker;
 
+import com.tasktracker.model.Task;
+
 public class Main {
     static void main() {
-        IO.println("Hello World!");
+        Task task = new Task(1L, "Test");
+        IO.println(task);
     }
 }
