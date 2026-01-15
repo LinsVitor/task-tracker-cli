@@ -5,8 +5,7 @@ import com.tasktracker.model.Task;
 import com.tasktracker.util.JsonUtil;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class JsonRepository implements TaskRepository{
     private static final File file = new File("data/tasks.json");
@@ -17,6 +16,7 @@ public class JsonRepository implements TaskRepository{
         try {
             if (fileExistAndNotEmpty) {
                 List<Task> tasks = findAll();
+                tasks.sort(Comparator.comparing(Task::getId));
                 try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
                     bw.write("[");
                     bw.newLine();
@@ -56,11 +56,12 @@ public class JsonRepository implements TaskRepository{
     public void delete(long id) {
         if (fileExistAndNotEmpty) {
             List<Task> tasks = findAll();
-            if (id > 1) {
-                tasks.remove((int) id - 1);
+            if (tasks.isEmpty()) {
+                throw new NoSuchElementException("No tasks found in file");
             }
-            else {
-                tasks.remove((int) id);
+            tasks.sort(Comparator.comparing(Task::getId));
+            if (id >= 1) {
+                tasks.remove((int) id - 1);
             }
             try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
                 bw.write("[");
@@ -87,6 +88,7 @@ public class JsonRepository implements TaskRepository{
     public Task findById(long id) {
         if (fileExistAndNotEmpty) {
             List<Task> tasks = findAll();
+            tasks.sort(Comparator.comparing(Task::getId));
             if(id > tasks.size()) {
                 return null;
             }
@@ -106,6 +108,11 @@ public class JsonRepository implements TaskRepository{
                         line = br.readLine();
                     }
                     if (line.contains("]")) {
+                        tasks.sort(Comparator.comparing(Task::getId));
+                        return tasks;
+                    }
+                    if (line.equals("")) {
+                        tasks.sort(Comparator.comparing(Task::getId));
                         return tasks;
                     }
                     Task task = JsonUtil.fromJson(line);
@@ -129,15 +136,9 @@ public class JsonRepository implements TaskRepository{
                     tasksStatus.add(tk);
                 }
             }
+            tasksStatus.sort(Comparator.comparing(Task::getId));
             return tasksStatus;
         }
         return null;
-    }
-
-    @Override
-    public void markStatus(long id, Status status) {
-        Task task = findById(id);
-        task.setStatus(status);
-        update(id, task);
     }
 }
