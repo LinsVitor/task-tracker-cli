@@ -65,13 +65,17 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", createdAt=" + createdAt.format(formatter) +
-                ", updatedAt=" + updatedAt +
-                '}';
+        if (updatedAt == null) {
+            return "Id: " + id + "\n"
+                    + "Description: " + description + "\n"
+                    + "Status: " + status + "\n"
+                    + "Created: " + createdAt.format(formatter);
+        }
+        return "Id: " + id + "\n"
+                + "Description: " + description + "\n"
+                + "Status: " + status + "\n"
+                + "Created: " + createdAt.format(formatter) + "\n"
+                + "Updated: " + updatedAt.format(formatter);
     }
 
     @Override
