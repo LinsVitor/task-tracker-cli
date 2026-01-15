@@ -12,5 +12,4 @@ public interface TaskRepository {
     Task findById(long id);
     List<Task> findAll();
     List<Task> findByStatus(Status status);
-    void markStatus(long id, Status status);
 }
