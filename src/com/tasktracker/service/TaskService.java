@@ -12,17 +12,23 @@ import java.util.List;
 public class TaskService {
     private final static JsonRepository jsonRepo = new JsonRepository();
 
+    private long genId() {
+        long id = 1;
+        List<Task> tasks = jsonRepo.findAll();
+        for (Task task : tasks) {
+            if (task.getId() != id) {
+                return id;
+            }
+            id++;
+        }
+        return id;
+    }
+
     public Task add(String description) {
         if (description.trim().isEmpty()) {
             throw new ServiceException("Description can't be empty.");
         }
-        List<Task> tasks = jsonRepo.findAll();
-        if (tasks.isEmpty()) {
-            Task task = new Task(1L, description);
-            jsonRepo.add(task);
-            return task;
-        }
-        Task task = new Task(tasks.size() + 1, description);
+        Task task = new Task(genId(), description);
         jsonRepo.add(task);
         return task;
     }
