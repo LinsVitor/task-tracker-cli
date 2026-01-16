@@ -1,6 +1,6 @@
 # Task Tracker CLI
 
-Uma aplicação simples de interface de linha de comando (CLI) para rastreamento de tarefas, escrita em Java. Este projeto demonstra uma implementação em Java puro, sem o uso de bibliotecas ou frameworks externos, gerenciando a persistência de dados através de um arquivo JSON.
+Uma aplicação simples de interface de linha de comando (CLI) para rastreamento de tarefas, escrita em Java. Este projeto demonstra uma implementação em Java puro sem usar bibliotecas ou frameworks externos, gerenciando a persistência de dados por meio de um arquivo JSON. Encontre os detalhes do projeto em [roadmap.sh](https://roadmap.sh/projects/task-tracker).
 
 ## Funcionalidades
 
@@ -22,7 +22,7 @@ Uma aplicação simples de interface de linha de comando (CLI) para rastreamento
 1.  **Compilar o código fonte:**
     Abra um terminal no diretório raiz do projeto e execute:
     ```bash
-    javac -d out src/com/tasktracker/Main.java src/com/tasktracker/cli/*.java src/com/tasktracker/exception/*.java src/com/tasktracker/model/*.java src/com/tasktracker/repository/*.java src/com/tasktracker/service/*.java src/com/tasktracker/util/*.java
+    Get-ChildItem -Path src -Recurse -Filter *.java | ForEach-Object { javac -d bin -cp src $_.FullName }
     ```
 
 2.  **Executar a aplicação:**
@@ -30,12 +30,12 @@ Uma aplicação simples de interface de linha de comando (CLI) para rastreamento
 
     *Exemplo: Adicionando uma tarefa*
     ```bash
-    java -cp out com.tasktracker.Main task-cli add "Comprar mantimentos"
+    java -cp bin Main task-cli add "Comprar mantimentos"
     ```
 
     *Exemplo: Listando tarefas*
     ```bash
-    java -cp out com.tasktracker.Main task-cli list
+    java -cp bin Main task-cli list
     ```
 
 ## Exemplos de Uso
