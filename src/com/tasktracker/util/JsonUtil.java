@@ -4,6 +4,8 @@ import com.tasktracker.model.Status;
 import com.tasktracker.model.Task;
 
 import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JsonUtil {
     public static String toJson(Task task) {
@@ -24,20 +26,37 @@ public class JsonUtil {
     }
 
     public static Task fromJson(String json) {
-        json = json.replace("{", "").replace("}", "");
-        String[] fileds = json.split(",");
         Task task = new Task();
-        task.setId(Long.parseLong(fileds[0].split(":")[1].strip()));
-        task.setDescription(fileds[1].split(":")[1].replace("\"", "").strip());
-        task.setStatus(Status.valueOf(fileds[2].split(":")[1].replace("\"", "").strip()));
-        task.setCreatedAt(LocalDateTime.parse(fileds[3].split(" ")[2].replace("\"", "").strip()));
-        String updatedAt = fileds[4].split(" ")[2].replace("\"", "").strip();
-        if (updatedAt.contains("null")) {
-            task.setUpdatedAt(null);
+        String quotedRegex = "\"\\s*:\\s*\"([^\"]*)";
+        String unquotedRegex = "\"\\s*:\\s*\"?([^\",}\\s]+)\"?";
+
+        Pattern id = Pattern.compile("Id" + unquotedRegex);
+        Pattern description = Pattern.compile("Description" + quotedRegex);
+        Pattern status = Pattern.compile("Status" + quotedRegex);
+        Pattern createdAt = Pattern.compile("CreatedAt" + quotedRegex);
+        Pattern updatedAt = Pattern.compile("UpdatedAT" + unquotedRegex);
+
+        Matcher matcher = id.matcher(json);
+        if (matcher.find()) {
+            task.setId(Integer.parseInt(matcher.group(1)));
         }
-        else {
-            task.setUpdatedAt(LocalDateTime.parse(updatedAt));
+        matcher = description.matcher(json);
+        if (matcher.find()) {
+            task.setDescription(matcher.group(1));
         }
+        matcher = status.matcher(json);
+        if (matcher.find()) {
+            task.setStatus(Status.valueOf(matcher.group(1)));
+        }
+        matcher = createdAt.matcher(json);
+        if (matcher.find()) {
+            task.setCreatedAt(LocalDateTime.parse(matcher.group(1)));
+        }
+        matcher = updatedAt.matcher(json);
+        if (matcher.find()) {
+            task.setUpdatedAt(LocalDateTime.parse(matcher.group(1)));
+        }
+
         return task;
     }
 }
